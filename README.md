@@ -1,16 +1,14 @@
 # Corpuz — MyFirstDjango Todo
 
-A Django task manager for the **mid_Exer01** GitHub checkpoint and **Exercise 2** PythonAnywhere deployment.
+A starter Django project for the **mid_Exer01** GitHub checkpoint and **Exercise 2** PythonAnywhere deployment.
 
-Classroom demo: <https://ezekieladducorpuz.pythonanywhere.com/>
+Deployed site: <https://ezekieladducorpuz.pythonanywhere.com/>
 
-## Features
+## Current scope
 
-- Create and edit tasks with optional notes and due dates.
-- Mark tasks complete or reopen them.
-- Filter by all, active, and completed tasks.
-- Delete tasks through a confirmation page.
-- Responsive interface, accessible form labels, CSRF protection, and automated tests.
+Deployment only. The home page intentionally returns an empty HTTP 200 response: no visible content, task interface, templates, or sample data.
+
+`todo_list` is an empty Django app scaffold. Models, views, and task features are reserved for the next lessons. The standard Django admin route remains part of the project scaffold.
 
 ## Development environment
 
@@ -87,6 +85,6 @@ Then click **Reload** on the Web tab. Management commands above use development 
 
 ## Scope and security
 
-The hosted site is a **public classroom demo**, not a private or multi-user task service. There is no sign-in or per-user task isolation: anyone with the URL can view, create, edit, or delete its tasks. Use only non-sensitive demonstration data. A real personal task service needs authentication and ownership checks before use.
+The hosted site currently serves only a blank home page. There are no task models or task endpoints. Authentication and ownership requirements can be considered when features are introduced in future lessons.
 
 No credentials, GitHub tokens, local database, or virtual environment are committed. Development uses a temporary random Django secret when `DJANGO_SECRET_KEY` is absent. The hosted WSGI configuration supplies a persistent private secret, disables debug mode, restricts allowed hosts, and uses HTTPS with secure cookies. Keep the local development server bound to localhost.
