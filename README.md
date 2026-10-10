@@ -1,6 +1,8 @@
 # Corpuz — MyFirstDjango Todo
 
-A local Django task manager for the **mid_Exer01** GitHub checkpoint exercise.
+A Django task manager for the **mid_Exer01** GitHub checkpoint and **Exercise 2** PythonAnywhere deployment.
+
+Classroom demo: <https://ezekieladducorpuz.pythonanywhere.com/>
 
 ## Features
 
@@ -53,8 +55,38 @@ python manage.py test
 - Git branch: `main`; initial commit message: `Initial commit`.
 - Repository: <https://github.com/edmcorpuz/Corpuz_MFD_todo>
 
+## Exercise 2: PythonAnywhere
+
+The existing PythonAnywhere app uses the platform's **Python 3.13** and matching virtualenv (Django 5.2 supports both local Python 3.12 and hosted Python 3.13).
+
+Web tab configuration:
+
+- Source code and working directory: `/home/EzekielADDUCorpuz/Corpuz_MFD_todo`
+- Virtualenv: `/home/EzekielADDUCorpuz/.virtualenvs/ENV`
+- WSGI file: `/var/www/ezekieladducorpuz_pythonanywhere_com_wsgi.py`
+- Static mapping: `/static/` → `/home/EzekielADDUCorpuz/Corpuz_MFD_todo/staticfiles`
+- Force HTTPS: enabled
+
+The WSGI file uses the code in `deploy/pythonanywhere_wsgi.py`, not the project's development WSGI file. It loads a private server-only JSON configuration from `/home/EzekielADDUCorpuz/.config/corpuz-todo/environment.json` containing `DJANGO_DEBUG` (`False`), `DJANGO_ALLOWED_HOSTS` (`ezekieladducorpuz.pythonanywhere.com,localhost,127.0.0.1`), and a randomly generated `DJANGO_SECRET_KEY`. Keep that file outside Git with permissions `0600`.
+
+Initial setup clones this repository, installs `requirements.txt` into `ENV`, runs migrations, collects static files, updates the Web tab, and reloads the app. The previous `mysite` directory is retained; the previous WSGI file is backed up before replacement.
+
+To deploy later updates, in a PythonAnywhere Bash console:
+
+```bash
+workon ENV
+cd ~/Corpuz_MFD_todo
+git pull --ff-only
+python -m pip install -r requirements.txt
+python manage.py migrate
+python manage.py collectstatic --noinput
+python manage.py check
+```
+
+Then click **Reload** on the Web tab. Management commands above use development defaults; web workers load the private production configuration through the WSGI file. Renew the free web app from the Web tab before its displayed expiry date.
+
 ## Scope and security
 
-This is a **single-user local learning project**, not a hosted multi-user service. There is no sign-in or per-user task isolation. Keep the development server bound to localhost; do not expose it to a public network.
+The hosted site is a **public classroom demo**, not a private or multi-user task service. There is no sign-in or per-user task isolation: anyone with the URL can view, create, edit, or delete its tasks. Use only non-sensitive demonstration data. A real personal task service needs authentication and ownership checks before use.
 
-No credentials, GitHub tokens, local database, or virtual environment are committed. Development uses a temporary randomly generated Django secret when `DJANGO_SECRET_KEY` is absent. Production mode (`DJANGO_DEBUG=False`) requires an explicit secret and `DJANGO_ALLOWED_HOSTS`; authentication, HTTPS, a production server, and additional deployment hardening would also be needed before hosting.
+No credentials, GitHub tokens, local database, or virtual environment are committed. Development uses a temporary random Django secret when `DJANGO_SECRET_KEY` is absent. The hosted WSGI configuration supplies a persistent private secret, disables debug mode, restricts allowed hosts, and uses HTTPS with secure cookies. Keep the local development server bound to localhost.
