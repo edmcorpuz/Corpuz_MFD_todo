@@ -1,0 +1,24 @@
+{% extends 'todo_list/base.html' %}
+{% block title %}{% if editing %}Edit task{% else %}New task{% endif %}{% endblock %}
+{% block content %}
+<div class="form-layout">
+  <a class="back-link" href="{% url 'todo_list:list' %}">← Back to tasks</a>
+  <p class="eyebrow">ONE SMALL STEP</p>
+  <h1>{% if editing %}A little fine-tuning{% else %}What's next?{% endif %}<span class="accent">.</span></h1>
+  <p class="subtitle">{% if editing %}Plans change. Make this task work for you.{% else %}Start with a title. The details can follow.{% endif %}</p>
+  <form method="post" class="form-card">
+    {% csrf_token %}
+    {% if form.errors %}<div class="error-summary" role="alert">Please correct the highlighted fields below.</div>{% endif %}
+    {{ form.non_field_errors }}
+    {% for field in form %}
+      <div class="form-field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="required">(required)</span>{% endif %}</label>
+        {{ field }}
+        {% if field.help_text %}<p class="help-text" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}
+        {{ field.errors }}
+      </div>
+    {% endfor %}
+    <div class="form-actions"><button type="submit" class="button primary">{% if editing %}Save changes{% else %}Create task{% endif %}</button><a class="button secondary" href="{% url 'todo_list:list' %}">Cancel</a></div>
+  </form>
+</div>
+{% endblock %}

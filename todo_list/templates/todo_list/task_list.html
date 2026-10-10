@@ -1,0 +1,42 @@
+{% extends 'todo_list/base.html' %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">YOUR PERSONAL WORKSPACE</p><h1>Make room for<br>what matters<span class="accent">.</span></h1><p class="subtitle">Big plans start with small steps. Let's take the next one.</p></div>
+  <a class="button primary" href="{% url 'todo_list:create' %}"><span aria-hidden="true">＋</span> New task</a>
+</section>
+<section class="stats" aria-label="Task summary">
+  <div class="stat"><span class="stat-label">Total tasks</span><strong>{{ counts.total|stringformat:'02d' }}</strong></div>
+  <div class="stat"><span class="stat-label"><span class="dot active-dot" aria-hidden="true"></span> In progress</span><strong>{{ counts.active|stringformat:'02d' }}</strong></div>
+  <div class="stat"><span class="stat-label"><span class="dot done-dot" aria-hidden="true"></span> Completed</span><strong>{{ counts.completed|stringformat:'02d' }}</strong></div>
+</section>
+<section class="task-panel" aria-labelledby="tasks-heading">
+  <div class="panel-header"><h2 id="tasks-heading">Your tasks</h2><nav class="filters" aria-label="Filter tasks">
+    <a href="{% url 'todo_list:list' %}" {% if status == 'all' %}class="selected" aria-current="page"{% endif %}>All <span>{{ counts.total }}</span></a>
+    <a href="?status=active" {% if status == 'active' %}class="selected" aria-current="page"{% endif %}>Active <span>{{ counts.active }}</span></a>
+    <a href="?status=completed" {% if status == 'completed' %}class="selected" aria-current="page"{% endif %}>Completed <span>{{ counts.completed }}</span></a>
+  </nav></div>
+  {% if tasks %}
+  <ul class="task-list">
+    {% for task in tasks %}
+    <li class="task-row {% if task.completed %}is-complete{% endif %}">
+      <form method="post" action="{% url 'todo_list:toggle' task.pk %}" class="toggle-form">
+        {% csrf_token %}<input type="hidden" name="status" value="{{ status }}">
+        <button class="task-toggle" type="submit" aria-label="{% if task.completed %}Reopen{% else %}Complete{% endif %} task: {{ task.title }}" aria-pressed="{{ task.completed|yesno:'true,false' }}">{% if task.completed %}✓{% endif %}</button>
+      </form>
+      <div class="task-content"><h3>{{ task.title }}</h3>{% if task.notes %}<p class="task-notes">{{ task.notes|linebreaksbr }}</p>{% endif %}
+        <div class="task-meta"><span class="badge {% if task.completed %}badge-done{% endif %}">{% if task.completed %}Completed{% else %}In progress{% endif %}</span>{% if task.due_date %}<span class="{% if task.is_overdue %}overdue{% endif %}">{% if task.is_overdue %}Overdue · {% else %}Due {% endif %}<time datetime="{{ task.due_date|date:'Y-m-d' }}">{{ task.due_date|date:'M j, Y' }}</time></span>{% endif %}</div>
+      </div>
+      <div class="task-actions"><a href="{% url 'todo_list:edit' task.pk %}" aria-label="Edit task: {{ task.title }}">Edit</a><a class="delete-link" href="{% url 'todo_list:delete' task.pk %}" aria-label="Delete task: {{ task.title }}">Delete</a></div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <div class="empty-state"><div class="empty-icon" aria-hidden="true">✓</div>
+    {% if status == 'completed' %}<h3>Your wins will live here.</h3><p>Complete a task and celebrate a little progress.</p>
+    {% elif status == 'active' %}<h3>You're all caught up.</h3><p>A clear list. A little breathing room. What's next?</p><a class="button secondary" href="{% url 'todo_list:create' %}">Add a task</a>
+    {% else %}<h3>A fresh start.</h3><p>Give your next idea a place to land.<br>Add your first task to get going.</p><a class="button secondary" href="{% url 'todo_list:create' %}">Create your first task <span aria-hidden="true">→</span></a>{% endif %}
+  </div>
+  {% endif %}
+</section>
+<p class="bottom-note">One thing at a time is still progress.</p>
+{% endblock %}

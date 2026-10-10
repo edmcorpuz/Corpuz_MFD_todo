@@ -1,0 +1,11 @@
+{% extends 'todo_list/base.html' %}
+{% block title %}Delete task{% endblock %}
+{% block content %}
+<div class="form-layout">
+  <a class="back-link" href="{% url 'todo_list:list' %}">← Back to tasks</a>
+  <p class="eyebrow">CLEAR SOME SPACE</p><h1>Let this one go?</h1>
+  <div class="form-card"><h2 class="delete-title">{{ task.title }}</h2><p class="subtitle">This task will be permanently deleted. This can't be undone.</p>
+    <form method="post">{% csrf_token %}<div class="form-actions"><button class="button danger" type="submit">Delete task</button><a class="button secondary" href="{% url 'todo_list:list' %}">Keep task</a></div></form>
+  </div>
+</div>
+{% endblock %}
